@@ -28,8 +28,31 @@ app.get('/api/genres/:id', (req, res) => {
     res.send(genre)
 })
 
+//POST
+app.post('/api/genres', (req, res) => {
+    let body = req.body
+    console.log(body)
+    
+    let result = validateGenre(body)
+    if (result.error) return res.status(400).send(result.error.details[0].message)
+
+    const course = {
+        id: genres.length + 1,
+        genre: body.genre
+    }
+    genres.push(course)
+    res.send(course)
+})
+
 function findGenre(id) {
     return genres.find(g => g.id === parseInt(id))
+}
+
+function validateGenre(genre) {
+    let schema = {
+        genre: Joi.string().min(3).max(20).required()
+    }
+    return Joi.validate(genre, schema)
 }
 
 const port = process.env.PORT || 3000
