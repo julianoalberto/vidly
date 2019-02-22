@@ -1,9 +1,12 @@
+const debug = require('debug')('genres:routes:genres')
 const joi = require('joi')
 const express = require('express')
 const router = express.Router()
 
+const genresDb = require('../db/genres-db')
+
 // genres array
-const genres = [
+const genresArray = [
     {id: 1, genre: 'Drama'},
     {id: 2, genre: 'Comedy'},
     {id: 3, genre: 'Action'},
@@ -14,50 +17,85 @@ const genres = [
 
 // GET
 router.get('/', (req, res) => {
-    res.send(genres)
+    genresDb
+    .getGenres()
+    .then((genres) => {
+        if (genres && genres.length > 0) res.send(genres)               
+        else res.status(404).send('No genres found.')
+    })
+    .catch((err) => {
+        res.status(500).send(err.message)            
+    })
 })
 
 //GET by id
 router.get('/:id', (req, res) => {
     let id = req.params.id
-    let genre = findGenre(id)
-    if (!genre) return res.status(404).send(`Genre with ID ${id} not found.`)
-    res.send(genre)
+    genresDb
+    .getById(id)
+    .then((genre) => {
+        if (genre) res.send(genre)
+        else res.status(404).send(`Genre with id ${id} not found.`)
+    })
+    .catch((err) => {
+        res.status(500).send(`Error getting genre with id ${id}: ${err.message}`)
+    })
 })
 
 //POST
 router.post('/', (req, res) => {
-    console.log(req.body)
-    
-    let result = validateGenre(req.body)
-    if (result.error) return res.status(400).send(result.error.details[0].message)
+    let validation = validateGenre(req.body)
+    if (validation.error) return res.status(400).send(validation.error.details[0].message)
 
-    const course = {
-        id: genres.length + 1,
-        genre: req.body.genre
-    }
-    genres.push(course)
-    res.send(course)
+    genresDb
+    .saveGenre({ 
+        genre: req.body.genre 
+    })
+    .then((genre) => {
+        res.send(genre)
+    })
+    .catch((err) => {
+        res.status(500).send(`Error saving genre: ${err.message}`)
+    })    
+})
+
+//DELETE
+router.delete('/:id', (req, res) => {
+    genresDb
+    .deleteById(req.params.id)
+    .then((deletedGenre) => {
+        debug(deletedGenre)
+        if (deletedGenre) res.send(deletedGenre)
+        else res.status(404).send(`Genre with id ${req.params.id} not found to delete.`)
+    })
+    .catch((err) => {
+        res.status(500).send(`Error deleting genre with id ${req.params.id}: ${err.message}`)
+    })
 })
 
 //PUT
 router.put('/:id', (req, res) => {
-    console.log(req.params.id, req.body)
+    const genre = { 
+        genre: req.body.genre
+    }
+    const validation = validateGenre(genre)
+    if (validation.error) return res.status(400).send(validation.error.details[0].message)
     
-    let genre = findGenre(req.params.id)
-    if (!genre) return res.status(404).send(`Genre with ID ${req.params.id} not found.`)
-
-    let result = validateGenre(req.body)
-    if (result.error) return res.status(400).send(result.error.details[0].message)
-
-    genres.splice(genres.indexOf(genre), 1)
-    genre.genre = req.body.genre
-    genres.push(genre)
-    res.send(genre)
+    genresDb
+    .updateGenre(req.params.id, genre)
+    .then((updatedGenre) => {
+        if (updatedGenre) res.send(updatedGenre)
+        else res.status(404).send(`Genre with id ${req.params.id} not found to update.`)
+    })
+    .catch((err) => {
+        res.status(500).send(`Error updating genre with id ${req.params.id}: ${err.message}`)
+    })
 })
 
+
+
 function findGenre(id) {
-    return genres.find(g => g.id === parseInt(id))
+    return genresArray.find(g => g.id === parseInt(id))
 }
 
 function validateGenre(genre) {
