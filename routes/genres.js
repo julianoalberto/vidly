@@ -78,10 +78,10 @@ router.put('/:id', (req, res) => {
     .updateGenre(genre)
     .then((updatedGenre) => {
         if (updatedGenre) res.send(updatedGenre)
-        else res.status(404).send(`Genre with id ${req.params.id} not found to update.`)
+        else res.status(404).send(`Genre with id ${genre._id} not found to update.`)
     })
     .catch((err) => {
-        res.status(500).send(`Error updating genre with id ${req.params.id}: ${err.message}`)
+        res.status(500).send(`Error updating genre with id ${genre._id}: ${err.message}`)
     })
 })
 
