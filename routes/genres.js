@@ -4,16 +4,7 @@ const express = require('express')
 const router = express.Router()
 
 const genresDb = require('../db/genres-db')
-
-// genres array
-const genresArray = [
-    {id: 1, genre: 'Drama'},
-    {id: 2, genre: 'Comedy'},
-    {id: 3, genre: 'Action'},
-    {id: 4, genre: 'Adventure'},
-    {id: 5, genre: 'Horror'}
-]
-
+genresDb.connect()
 
 // GET
 router.get('/', (req, res) => {
@@ -91,12 +82,6 @@ router.put('/:id', (req, res) => {
         res.status(500).send(`Error updating genre with id ${req.params.id}: ${err.message}`)
     })
 })
-
-
-
-function findGenre(id) {
-    return genresArray.find(g => g.id === parseInt(id))
-}
 
 function validateGenre(genre) {
     let schema = {

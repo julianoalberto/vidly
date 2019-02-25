@@ -18,97 +18,80 @@ const Genre = mongoose.model('Genre', genreSchema)
 
 function saveGenre(newGenre) {
     return new Promise((resolve, reject) => {
-        connect()
-        .then(() => {
-            const savedGenre = new Genre({
-                genre: newGenre.genre
-            })
-
-            debug(`Saving: ${newGenre.genre}`)
-
-            savedGenre
-            .save()
-            .then((savedGenre) => {
-                debug(`Saved: ${savedGenre}`)
-                resolve(savedGenre)
-            })
-            .catch((err) => { reject(err) })                
+        const savedGenre = new Genre({
+            genre: newGenre.genre
         })
-        .catch((err) => { reject(err) })
+
+        debug(`Saving: ${newGenre.genre}`)
+
+        savedGenre
+        .save()
+        .then((savedGenre) => {
+            debug(`Saved: ${savedGenre}`)
+            resolve(savedGenre)
+        })
+        .catch((err) => { reject(err) })        
     })    
 }
 
 function updateGenre(id, newGenre) {
     return new Promise((resolve, reject) => {
-        connect()
-        .then(() => {
-            debug(`Updating ${id}`)
+        debug(`Updating ${id}`)
 
-            Genre
-            .findById(id)                
-            .then((before) => {
-                if(before) {
-                    debug(`Before ${before}`)
-                    before.genre = newGenre.genre
-                    
-                    before
-                    .save()
-                    .then((after) => {
-                        debug(`After ${after}`)
-                        resolve(after)
-                    })
-                } else resolve()
-            })
-            .catch((err) => { reject(err) })
+        Genre
+        .findById(id)                
+        .then((before) => {
+            if(before) {
+                debug(`Before ${before}`)
+                before.genre = newGenre.genre
+                
+                before
+                .save()
+                .then((after) => {
+                    debug(`After ${after}`)
+                    resolve(after)
+                })
+            } else resolve()
         })
-        .catch((err) => { reject(err) })
+        .catch((err) => { reject(err) })        
     }) 
 }
 
 function getGenres() {
     return new Promise((resolve, reject) => {
-        connect()
-        .then(() => {
-            debug('Getting genres')
-            Genre
-            .find()
-            .then((genres) => {
-                debug(`Genres found: ${genres.length}`)
-                resolve(genres)
-            })
+        debug('Getting genres')
+
+        Genre
+        .find()
+        .then((genres) => {
+            debug(`Genres found: ${genres.length}`)
+            resolve(genres)
         })
-        .catch((err) => { reject(err) })  
+        .catch((err) => { reject(err) })
     })  
 }
 
 function getById(id) {
     return new Promise((resolve, reject) => {
-        connect()
-        .then(() => {
-            debug(`Getting genre by id ${id}`)
-            Genre
-            .findById(id)
-            .then((genre) => {
-                if (genre) debug(`Found genre ${genre}`)
-                else debug(`Genre with id ${id} not found.`)
-                resolve(genre)
-            })
-            .catch((err) => { reject(err) })
+        debug(`Getting genre by id ${id}`)
+
+        Genre
+        .findById(id)
+        .then((genre) => {
+            if (genre) debug(`Found genre ${genre}`)
+            else debug(`Genre with id ${id} not found.`)
+            resolve(genre)
         })
-        .catch((err) => { reject(err) })            
+        .catch((err) => { reject(err) })
     })
 }
 
 function deleteById(id) {
     return new Promise((resolve, reject) => {
-        connect()
-        .then(() => {
-            Genre
-            .findByIdAndDelete(id)
-            .then((deletedGenre) => {
-                resolve(deletedGenre)
-            })
-            .catch((err) => { reject(err) })
+        Genre
+        .findByIdAndDelete(id)
+        .then((deletedGenre) => {
+            resolve(deletedGenre)
         })
         .catch((err) => { reject(err) })
     })
@@ -135,3 +118,4 @@ module.exports.updateGenre = updateGenre
 module.exports.getGenres = getGenres
 module.exports.getById = getById
 module.exports.deleteById = deleteById
+module.exports.connect = connect
