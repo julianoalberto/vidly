@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 
 const connectionString = config.get('database.connectionString')
 
-const genreSchema = mongoose.Schema({
+const Genre = mongoose.model('Genre', mongoose.Schema({
     genre: { 
         type: String,
         required: true,
@@ -12,15 +12,11 @@ const genreSchema = mongoose.Schema({
         maxlength: 20,
         trim: true
     }
-})
-
-const Genre = mongoose.model('Genre', genreSchema)
+}))
 
 function saveGenre(newGenre) {
     return new Promise((resolve, reject) => {
-        const savedGenre = new Genre({
-            genre: newGenre.genre
-        })
+        const savedGenre = new Genre({ genre: newGenre.genre })
 
         debug(`Saving: ${newGenre.genre}`)
 
@@ -34,12 +30,12 @@ function saveGenre(newGenre) {
     })    
 }
 
-function updateGenre(id, newGenre) {
+function updateGenre(newGenre) {
     return new Promise((resolve, reject) => {
-        debug(`Updating ${id}`)
+        debug(`Updating ${newGenre._id}`)
 
         Genre
-        .findById(id)                
+        .findById(newGenre._id)                
         .then((before) => {
             if(before) {
                 debug(`Before ${before}`)
@@ -62,7 +58,7 @@ function getGenres() {
         debug('Getting genres')
 
         Genre
-        .find()
+        .find().sort('genre')
         .then((genres) => {
             debug(`Genres found: ${genres.length}`)
             resolve(genres)

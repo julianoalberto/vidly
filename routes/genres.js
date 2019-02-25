@@ -72,8 +72,10 @@ router.put('/:id', (req, res) => {
     const validation = validateGenre(genre)
     if (validation.error) return res.status(400).send(validation.error.details[0].message)
     
+    genre._id = req.params.id
+
     genresDb
-    .updateGenre(req.params.id, genre)
+    .updateGenre(genre)
     .then((updatedGenre) => {
         if (updatedGenre) res.send(updatedGenre)
         else res.status(404).send(`Genre with id ${req.params.id} not found to update.`)
