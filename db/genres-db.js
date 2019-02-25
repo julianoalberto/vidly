@@ -1,8 +1,5 @@
-const debug = require('debug')('genres:db:genres')
-const config = require('config')
+const debug = require('debug')('vidly:db:genres')
 const mongoose = require('mongoose')
-
-const connectionString = config.get('database.connectionString')
 
 const Genre = mongoose.model('Genre', mongoose.Schema({
     genre: { 
@@ -93,25 +90,8 @@ function deleteById(id) {
     })
 }
 
-function connect() {
-    return new Promise((resolve, reject) => {
-        mongoose
-        .connect(connectionString)
-        .then(() => {
-            debug(`Connected to ${connectionString}.`)
-            resolve()
-        })
-        .catch((err) => {
-            debug(`Error connnecting to ${connectionString}:`)
-            debug(err.message)
-            reject(err)
-        })
-    })
-}
-
 module.exports.saveGenre = saveGenre
 module.exports.updateGenre = updateGenre
 module.exports.getGenres = getGenres
 module.exports.getById = getById
 module.exports.deleteById = deleteById
-module.exports.connect = connect

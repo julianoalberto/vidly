@@ -1,10 +1,9 @@
-const debug = require('debug')('genres:routes:genres')
-const joi = require('joi')
+const debug = require('debug')('vidly:routes:genres')
+const Joi = require('joi')
 const express = require('express')
 const router = express.Router()
 
 const genresDb = require('../db/genres-db')
-genresDb.connect()
 
 // GET
 router.get('/', (req, res) => {
@@ -86,10 +85,10 @@ router.put('/:id', (req, res) => {
 })
 
 function validateGenre(genre) {
-    let schema = {
-        genre: joi.string().min(3).max(20).required()
+    const schema = {
+        genre: Joi.string().min(3).max(20).required()
     }
-    return joi.validate(genre, schema)
+    return Joi.validate(genre, schema)
 }
 
 module.exports = router
