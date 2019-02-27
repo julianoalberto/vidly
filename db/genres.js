@@ -1,14 +1,5 @@
 const mongoose = require('mongoose')
-
-const Genre = mongoose.model('Genre', mongoose.Schema({
-    name: { 
-        type: String,
-        required: true,
-        minlength: 3,
-        maxlength: 20,
-        trim: true
-    }
-}))
+const {Genre} = require('../models/genre')
 
 function get() {
     return Genre.find().sort('name')

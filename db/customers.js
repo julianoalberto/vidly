@@ -1,23 +1,5 @@
 const mongoose = require('mongoose')
-
-const Customer = mongoose.model('Customer', mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        minlength: 3,
-        maxlength: 50,
-        trim: true
-    },
-    isGold: {
-        type: Boolean,
-        required: true        
-    },
-    phone: {
-        type: Number,
-        required: true,
-        max: 99999999
-    }
-}))
+const {Customer} = require('../models/customer')
 
 function save(customer) {
     return new Customer(customer).save()

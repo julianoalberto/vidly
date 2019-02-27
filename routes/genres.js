@@ -1,9 +1,9 @@
 const debug = require('debug')('vidly:routes:genres')
-const Joi = require('joi')
-const express = require('express')
-const router = express.Router()
-
+const {validate} = require('../models/genre')
 const genresDb = require('../db/genres')
+const express = require('express')
+
+const router = express.Router()
 
 router.get('/', (req, res) => {
     genresDb
@@ -71,12 +71,5 @@ router.delete('/:id', (req, res) => {
         res.status(500).send(`Error deleting genre with id ${req.params.id}: ${err.message}`)
     })
 })
-
-function validate(genre) {
-    const schema = {
-        name: Joi.string().min(3).max(20).required()
-    }
-    return Joi.validate(genre, schema)
-}
 
 module.exports = router

@@ -1,7 +1,7 @@
 const debug = require('debug')('vidly:routes:customers')
-const express = require('express')
-const Joi = require('joi')
+const {validate} = require('../models/customer')
 const customersDb = require('../db/customers')
+const express = require('express')
 
 const router = express.Router()
 
@@ -72,14 +72,5 @@ router.delete('/:id', (req, res) => {
         res.status(500).send(err.message)
     })
 })
-
-function validate(customer) {
-    const schema = {
-        name: Joi.string().min(3).max(50).required(),
-        isGold: Joi.boolean().default(false),
-        phone: Joi.number().positive().max(99999999).required()
-    }
-    return Joi.validate(customer, schema)
-}
 
 module.exports = router
