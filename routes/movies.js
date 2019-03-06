@@ -54,7 +54,7 @@ router.post('/', (req,res) => {
                 res.status(500).send(err.message)
             })
         }
-        else return res.status(404).send(`Genre with id ${movie.genreId} not found.`)
+        else return res.status(400).send(`Genre with id ${movie.genreId} not found.`)
     })    
 })
 
@@ -65,6 +65,28 @@ router.put('/:id', (req, res) => {
     
     const movie = validation.value
     movie._id = req.params.id
+    
+    debug('Movie:', movie)
+    genresDb
+    .getById(movie.genreId)
+    .then((genre) => {
+        debug('Genre: ', genre)
+        if(genre) {
+            movie.genre = {
+                _id: genre._id,
+                name: genre.name
+            }
+            delete movie.genreId
+            moviesDb.update(movie)
+            .then((savedMovie) => {
+                res.send(savedMovie)
+            })
+            .catch((err) => {
+                res.status(500).send(err.message)
+            })
+        }
+        else return res.status(400).send(`Genre with id ${movie.genreId} not found.`)
+    })   
 
     moviesDb.update(movie)
     .then((updatedMovie) => {
