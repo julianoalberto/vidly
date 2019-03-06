@@ -64,8 +64,8 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     customersDb
     .deleteById(req.params.id)
-    .then((c) => {
-        if (c) res.send(c)
+    .then((deletedCustomer) => {
+        if (deletedCustomer) res.send(deletedCustomer)
         else res.status(404).send(`Customer with id ${req.params.id} not found.`)        
     })
     .catch((err) => {

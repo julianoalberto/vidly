@@ -20,3 +20,4 @@ function validate(genre) {
 
 module.exports.Genre = Genre
 module.exports.validate = validate
+module.exports.genreSchema = Genre.schema
