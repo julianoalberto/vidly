@@ -33,26 +33,10 @@ function validate(movie) {
         title: Joi.string().min(3).max(50).required(),
         numberInStock: Joi.number().integer().min(0).default(0).required(),
         dailyRentalRate: Joi.number().precision(2).min(0).default(0).required(),
-        genreId: Joi.string().required()
+        genreId: Joi.objectId().required()
     }
     return Joi.validate(movie, schema)
 }
-
-
-// var portSchema = Joi.number().integer().min(0).max(65535);
-// var configSchema = Joi.object({
-//     bindhost: Joi.string().required(),
-//     port: portSchema.required(),
-//     endpoints: Joi.object({
-//         "/": Joi.string().required(),
-//         "/customers": Joi.string().default("customersHandler").optional()
-//     }),
-//     database: Joi.object({
-//         host: Joi.string().required(),
-//         name: Joi.string().token().max(20),
-//         port: portSchema.default(5050).optional()
-//     })
-// });
 
 module.exports.Movie = Movie
 module.exports.validate = validate
